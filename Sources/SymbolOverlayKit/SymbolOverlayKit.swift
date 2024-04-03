@@ -4,25 +4,38 @@
 import SwiftUI
 import Foundation
 
-@available(iOS 14.0, macOS 11.0, *)
 
+@available(iOS 14.0, macOS 11.0, *)
 struct SymbolItem: View {
-  var color: Color
-  var symbol: String
-  var size: CGFloat
-  
-  var body: some View {
-      Image(systemName: symbol)
-          .font(.system(size: size))
-//          .frame(width: 10, height: 10, alignment: .center)
-          .foregroundColor(color)
-    }
+	 let type: OverlayType
+	 var color: Color
+	 var size: CGFloat
+	 
+	 public init(overlayType: OverlayType,color: Color, size: CGFloat) {
+		  self.type = overlayType
+		  self.color = color
+		  self.size = size
+	 }
+	 
+	 var body: some View {
+		  switch type {
+				case .symbol( let systemName):
+					 Image(systemName: systemName)
+						  .font(.system(size: size))
+						  .foregroundColor(color)
+				case .bundle( let named):
+					 Image(named,bundle: .main)
+						  .resizable()
+						  .scaledToFit()
+						  .frame(width: size, height: size, alignment: .center)
+		  }
+	 }
 }
 
 @available(iOS 14.0, macOS 11.0, *)
 public extension View {
     
-    @ViewBuilder func symbolOverlayRoundedRectangle(symbol: String, size: CGFloat, color: Color, opacity: Double, rotation: Double = -20, vspacing: CGFloat = 20, hspacing: CGFloat = 10, rectangleCornerRadius: Double) -> some View {
+    @ViewBuilder func symbolOverlayRoundedRectangle(symbol: OverlayType, size: CGFloat, color: Color?, opacity: Double, rotation: Double = -20, vspacing: CGFloat = 20, hspacing: CGFloat = 10, rectangleCornerRadius: Double) -> some View {
         var rows: [GridItem] { Array(repeating: GridItem(.fixed(10), spacing: vspacing, alignment: .center), count: 15) }
         
         self
@@ -30,7 +43,7 @@ public extension View {
                 
                 LazyHGrid(rows: rows, alignment: .center, spacing: hspacing, pinnedViews: [], content: {
                     ForEach(0 ..< 180) { item in
-                        SymbolItem(color: color, symbol: symbol, size: size)
+								SymbolItem(overlayType: symbol, color: color ?? .secondary, size: size)
                     }
                 }).rotationEffect(.degrees(rotation))
                     .opacity(opacity)
@@ -39,7 +52,7 @@ public extension View {
         
     }
     
-    @ViewBuilder func symbolOverlayRectangle(symbol: String, size: CGFloat, color: Color, opacity: Double, rotation: Double = -20, vspacing: CGFloat = 20, hspacing: CGFloat = 10) -> some View {
+    @ViewBuilder func symbolOverlayRectangle(symbol: OverlayType, size: CGFloat, color: Color?, opacity: Double, rotation: Double = -20, vspacing: CGFloat = 20, hspacing: CGFloat = 10) -> some View {
         var rows: [GridItem] { Array(repeating: GridItem(.fixed(10), spacing: vspacing, alignment: .center), count: 15) }
         
         self
@@ -47,7 +60,7 @@ public extension View {
                 
                 LazyHGrid(rows: rows, alignment: .center, spacing: hspacing, pinnedViews: [], content: {
                     ForEach(0 ..< 180) { item in
-                        SymbolItem(color: color, symbol: symbol, size: size)
+								SymbolItem(overlayType: symbol, color: color ?? .secondary, size: size)
                     }
                 }).rotationEffect(.degrees(rotation))
                     .opacity(opacity)
@@ -56,7 +69,7 @@ public extension View {
         
     }
     
-    @ViewBuilder func symbolOverlayCircle(symbol: String, size: CGFloat, color: Color, opacity: Double, rotation: Double = -20, vspacing: CGFloat = 20, hspacing: CGFloat = 10) -> some View {
+    @ViewBuilder func symbolOverlayCircle(symbol: OverlayType, size: CGFloat, color: Color?, opacity: Double, rotation: Double = -20, vspacing: CGFloat = 20, hspacing: CGFloat = 10) -> some View {
         var rows: [GridItem] { Array(repeating: GridItem(.fixed(10), spacing: vspacing, alignment: .center), count: 15) }
         
         self
@@ -64,8 +77,7 @@ public extension View {
                 
                 LazyHGrid(rows: rows, alignment: .center, spacing: hspacing, pinnedViews: [], content: {
                     ForEach(0 ..< 180) { item in
-                        SymbolItem(color: color, symbol: symbol, size: size)
-                    }
+								SymbolItem(overlayType: symbol, color: color ?? .secondary, size: size)          }
                 }).rotationEffect(.degrees(rotation))
                     .opacity(opacity)
             ).clipped()
@@ -73,7 +85,7 @@ public extension View {
         
     }
     
-    @ViewBuilder func symbolOverlayCapsule(symbol: String, size: CGFloat, color: Color, opacity: Double, rotation: Double = -20, vspacing: CGFloat = 20, hspacing: CGFloat = 10) -> some View {
+    @ViewBuilder func symbolOverlayCapsule(symbol: OverlayType, size: CGFloat, color: Color?, opacity: Double, rotation: Double = -20, vspacing: CGFloat = 20, hspacing: CGFloat = 10) -> some View {
         var rows: [GridItem] { Array(repeating: GridItem(.fixed(10), spacing: vspacing, alignment: .center), count: 15) }
         
         self
@@ -81,8 +93,7 @@ public extension View {
                 
                 LazyHGrid(rows: rows, alignment: .center, spacing: hspacing, pinnedViews: [], content: {
                     ForEach(0 ..< 180) { item in
-                        SymbolItem(color: color, symbol: symbol, size: size)
-                    }
+								SymbolItem(overlayType: symbol, color: color ?? .secondary, size: size)                   }
                 }).rotationEffect(.degrees(rotation))
                     .opacity(opacity)
             ).clipped()
@@ -90,7 +101,7 @@ public extension View {
         
     }
     
-    @ViewBuilder func symbolOverlayEllipse(symbol: String, size: CGFloat, color: Color, opacity: Double, rotation: Double = -20, vspacing: CGFloat = 20, hspacing: CGFloat = 10) -> some View {
+    @ViewBuilder func symbolOverlayEllipse(symbol: OverlayType, size: CGFloat, color: Color, opacity: Double, rotation: Double = -20, vspacing: CGFloat = 20, hspacing: CGFloat = 10) -> some View {
         var rows: [GridItem] { Array(repeating: GridItem(.fixed(10), spacing: vspacing, alignment: .center), count: 15) }
         
         self
@@ -98,8 +109,7 @@ public extension View {
                 
                 LazyHGrid(rows: rows, alignment: .center, spacing: hspacing, pinnedViews: [], content: {
                     ForEach(0 ..< 180) { item in
-                        SymbolItem(color: color, symbol: symbol, size: size)
-                    }
+								SymbolItem(overlayType: symbol, color: color, size: size)                    }
                 }).rotationEffect(.degrees(rotation))
                     .opacity(opacity)
             ).clipped()
@@ -109,4 +119,9 @@ public extension View {
     
 }
 
+@available(iOS 14.0, macOS 11.0, *)
+public enum OverlayType {
+	 case symbol(systemName: String)
+	 case bundle(named: String)
+}
 
